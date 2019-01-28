@@ -15,6 +15,12 @@ namespace UltimateCalendarWebService
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
+                name: "UltimateCalendarDefault",
+                routeTemplate: "UltimateCalendarDefault/{action}/{id}",
+                defaults: new { controller = "UltimateCalendarDefault", action = "Get", id = RouteParameter.Optional }
+                );
+
+            config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
