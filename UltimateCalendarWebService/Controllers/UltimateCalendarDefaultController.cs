@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Script.Serialization;
 using UltimateCalendarClassLibrary;
 using UltimateCalendarWebService;
 
@@ -15,37 +16,29 @@ namespace UltimateCalendarWebService.Controllers
         IDataHandler dataHandler = new SQLDataHandler(ConfigurationManager.ConnectionStrings["GCPMySqlDB"].ConnectionString);
 
         [HttpGet]
-        public User GetUser(string email,string password)
+        public User GetUser(string email, string password)
         {
             User user = new User();
-            dataHandler.CredentialsCheck(email, password,out user);
+            dataHandler.CredentialsCheck(email, password, out user);
             return user;
         }
 
         [HttpGet]
-        public List<Event> GetEventsForUser(DateTime date, User user)
+        public List<Event> GetEventsForUser(string date, int userId)
         {
-            return dataHandler.GetEvents(date, user);
+            return dataHandler.GetEvents(Convert.ToDateTime(date), userId);
         }
 
         [HttpPost]
-        public string RegisterUser(User user)
+        public string RegisterUser([FromBody] User userJson)
         {
-            return dataHandler.RegisterUser(user);
+            return dataHandler.RegisterUser(userJson);
         }
 
         [HttpPost]
-        public string PostEvent(Event @event)
+        public string PostEvent([FromBody]Event eventJson)
         {
-            try
-            {
-                dataHandler.AddEvent(@event);
-                return "Event successfully added";
-            }
-            catch (Exception ex)
-            {
-                return "Couldn't add event " + ex.Message;
-            }
+            return dataHandler.AddEvent(eventJson);
         }
     }
 }
